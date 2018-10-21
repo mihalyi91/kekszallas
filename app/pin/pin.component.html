@@ -1,0 +1,30 @@
+<ng-template #pinContent let-c="close" let-d="dismiss">
+  <div class="modal-header" style="text-align: center">
+    <h4 class="modal-title pull-left" style="padding-left: 0px;">
+		<span *ngIf="accID.web == ''">{{accID.name}}</span>
+		<span *ngIf="accID.web != ''"><a href="{{accID.web}}" target="blank">{{accID.name}}</a></span>
+	</h4>
+	<div class="modal-title pull-right">
+	<span (click)="edit(EditContent, accID)"><i class="fa fa-pencil" aria-hidden="true"></i>&nbsp;&nbsp;</span>
+	<span *ngIf="accID.web != ''"><a href="{{accID.web}}" target="blank"><i class="fa fa-link" aria-hidden="true"></i></a>&nbsp;&nbsp;</span>
+	<button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+	</div>
+  </div>
+  <div class="modal-body">
+    <p><i class="fa fa-home" aria-hidden="true"></i> {{accID.address}}</p>
+	<p><i class="fa fa-phone" aria-hidden="true"></i> {{accID.phone}}</p>
+	<p *ngIf="accID.mail != ''">@ {{accID.mail}}</p>
+	<p *ngIf="accID.price != 0"><i class="fa fa-dollar" aria-hidden="true"></i> {{accID.price}} Ft/fő/éj</p>
+	<p *ngIf="accID.szepKartya != '0|0|0'"><i class="fa fa-credit-card" aria-hidden="true"></i>
+		<span *ngIf="accID.szepKartya.startsWith('1')">OTP</span>
+		<span *ngIf="accID.szepKartya.includes('|1|')">MKB</span>
+		<span *ngIf="accID.szepKartya.endsWith('1')">K&amp;H</span>
+		szép kártya
+	</p>
+  </div>
+  <div class="modal-footer">
+  	<i class="fa fa-heart" style="color: red;" aria-hidden="true" (click)="feedback(accID.id)">{{accID.positiveFeedback}}</i> <i class="fa fa-info-circle" style="color: green;" aria-hidden="true" (click)="feedback(accID.id)">{{accID.neutralFeedback}}</i> <i class="fa fa-thumbs-down" aria-hidden="true" (click)="feedback(accID.id)">{{accID.negativeFeedback}}</i>
+  </div>
+</ng-template>

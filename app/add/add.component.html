@@ -1,0 +1,73 @@
+<div style="position: absolute; top: 3px; right: 2px; left: 2px; z-index: 105">
+<ngb-alert *ngIf="successMessage" type="success" (close)="successMessage = null">Sikeresen hozzáadtál egy új szállást! Köszönjük.</ngb-alert>
+</div>
+<ng-template #addcontent let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h4 class="modal-title">Új Szállás Hozzáadás</h4>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div [ngClass]="nameError ? 'form-group has-danger' : 'form-group'" id="szallasDiv" style="margin-bottom: 0rem">
+      <label for="usr" *ngIf="!nameError">Szállás neve:</label>
+	  <label for="usr" *ngIf="nameError" style="color: #f00">Szállás neve: {{nameErrorMessage}}</label>
+      <input [(ngModel)]="name" type="text" class="form-control" placeholder="Szállás neve" id="usr">
+    </div>
+    <div [ngClass]="addressError ? 'form-group has-danger' : 'form-group'" id="addressDiv" style="margin-bottom: 0rem">
+      <label for="usr" *ngIf="!addressError">Szállás címe:</label>
+	  <label for="usr" *ngIf="addressError" style="color: #f00">Szállás címe: Ez a mező kötelező!</label>
+      <input [(ngModel)]="address" type="text" class="form-control" placeholder="Szállás címe" id="usr">
+    </div>
+	<div [ngClass]="phoneError ? 'form-group has-danger' : ' form-group'" id="phoneDiv" style="margin-bottom: 0rem">
+		<label for="phone" *ngIf="!phoneError" class="col-9" style="padding: 0px;">Telefonszám:</label>
+		<label for="phone" *ngIf="phoneError" style="color: #f00" class="col-9" style="padding: 0px;">Telefonszám: Hibás! Javasolt formátum: +36(70)123-4567</label>
+		<label for="tura">Túramozgalom:</label>
+	  <div class="input-group">
+	  <input [(ngModel)]="phone" type="text" class="form-control col-9" placeholder="Telefonszám, például: +36(70)123-4567">
+	  <input [(ngModel)]="trail" type="text" class="form-control col-2" placeholder="OKT" readonly>
+		<div class="btn-group" ngbDropdown role="group" aria-label="Button group with nested dropdown">
+			<button class="btn btn-primary dropdown-toggle-split" ngbDropdownToggle></button>
+			<div class="dropdown-menu" ngbDropdownMenu>
+			<button class="dropdown-item" (click)="select('OKT')">OKT</button>
+			<button class="dropdown-item" (click)="select('DDK')">RB-DDK</button>
+			<button class="dropdown-item" (click)="select('AK')">AK</button>
+			</div>
+		</div>
+	  </div>
+	</div>
+    <div class="form-group" style="margin-bottom: 0rem">
+	    <label for="usr" *ngIf="!urlError">Egyéb elérhetőség:</label>
+		<label for="usr" *ngIf="urlError" style="color: #f00">Egyéb elérhetőség: Hibás webcím formátum!</label>
+	    <div class="input-group">
+		  <div class="input-group-addon"><i class="fa fa-link" aria-hidden="true"></i></div>
+		  <input [(ngModel)]="website" type="url" class="form-control" placeholder="Weboldal"  id="usr"/>
+		  <div class="input-group-addon">@</div>
+		  <input [(ngModel)]="mail" type="text" class="form-control" placeholder="E-mail cím" />
+	    </div>
+    </div>
+    <div class="form-group" style="margin-bottom: 0rem">
+      <label for="usr">Ár:</label>
+	  <div class="input-group mb-2 mr-sm-2 mb-sm-0">
+	     <input [(ngModel)]="price" type="number" class="form-control" placeholder="Szállás ára" id="usr">
+	     <div class="input-group-addon">Ft/fő/éj</div>
+	  </div>
+    </div>
+	<label>Utalvány elfogadás:</label><br>
+	<label for="szepcheckbox">
+	<input class="col-form-input" type="checkbox" id="szepcheckbox" [(ngModel)]="otp"  value="OTP">
+	OTP Szép Kártya
+	</label>
+	<label for="szepcheckbox2">
+	<input class="col-form-input" type="checkbox" id="szepcheckbox2" [(ngModel)]="mkb" value="MKB">
+	MKB Szép Kártya
+	</label>
+	<label for="szepcheckbox3">
+	<input class="col-form-input" type="checkbox" id="szepcheckbox3"[(ngModel)]="kh" value="KH">
+	K&H Szép Kártya
+	</label>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-dark" (click)="add()">Hozzáadás</button>
+  </div>
+</ng-template>

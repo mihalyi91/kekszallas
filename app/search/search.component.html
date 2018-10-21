@@ -1,0 +1,47 @@
+<ng-template #searchContent let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h4 class="modal-title">Szállás Keresés</h4>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+	<div class="form-group">
+	   <label for="usr">Túramozgalom megjelenítése a térképen:</label>
+	      <div class="btn-group btn-group-toggle btn-block">
+			<label class="btn-primary" ngbButtonLabel style="width:33%">
+			  <input type="checkbox" ngbButton [(ngModel)]="settings.showOKT"> OKT
+			</label>
+			<label class="btn-primary" ngbButtonLabel style="width:33%">
+			  <input type="checkbox"  ngbButton [(ngModel)]="settings.showDDK"> RP-DDK
+			</label>
+			<label class="btn-primary" ngbButtonLabel style="width:33%">
+			  <input type="checkbox"  ngbButton [(ngModel)]="settings.showAK"> AK
+			</label>
+		</div>
+      <label>Ár:</label>
+	    <div class="input-group">
+		  <input [(ngModel)]="minAr" type="number" class="form-control" placeholder="Minimum ár"/>
+		  <div class="input-group-addon">-</div>
+		  <input [(ngModel)]="maxAr" type="number" class="form-control" placeholder="Maximum ár" />
+		  <div class="input-group-addon">Ft/fő/éj</div>
+	    </div>
+		<label>Utalvány elfogadás:</label><br>
+		<label for="szepcheckbox">
+		<input class="col-form-input" type="checkbox" id="szepcheckbox" [(ngModel)]="otp"  value="OTP">
+		OTP Szép Kártya
+		</label>
+		<label for="szepcheckbox2">
+		<input class="col-form-input" type="checkbox" id="szepcheckbox2" [(ngModel)]="mkb" value="MKB">
+		MKB Szép Kártya
+		</label>
+		<label for="szepcheckbox3">
+		<input class="col-form-input" type="checkbox" id="szepcheckbox3"[(ngModel)]="kh" value="KH">
+		K&H Szép Kártya
+		</label>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-dark" (click)="search()">Keresés</button>
+  </div>
+</ng-template>

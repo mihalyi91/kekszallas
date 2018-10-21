@@ -1,0 +1,23 @@
+<ng-template #feedbackContent let-c="close" let-d="dismiss">
+  <div class="modal-header" style="text-align: center">
+    <h4 class="modal-title pull-left" style="padding-left: 0px;" (click)="open(feedbackID.id)"><i class="fa fa-reply" aria-hidden="true" ></i>&nbsp;{{feedbackID.name}}</h4>
+	<div class="modal-title pull-right">
+	<button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+	</div>
+  </div>
+  <div class="modal-body">
+    <span *ngFor="let feedback of feedbackID.feedbacks">
+     <i class="fa fa-heart" style="color: red;" aria-hidden="true" *ngIf="feedback.feedbackType == 3"></i>
+	 <i class="fa fa-info-circle" style="color: green;" aria-hidden="true" *ngIf="feedback.feedbackType == 2"></i>
+	 <i class="fa fa-thumbs-down" aria-hidden="true" *ngIf="feedback.feedbackType == 1"></i>
+	 {{feedback.name}} - {{feedback.date}}
+	<p style="overflow-x: auto;">{{feedback.feedbackText}}</p>
+	</span>
+	<p *ngIf="feedbackID.feedbacks.length == 0" style="color: red;">Sajnos még nem érkezett értékelés erre a szállásra.<br> Tölsd fel Te egyet!</p>
+  </div>
+  <div class="modal-footer">
+	<button type="button" class="btn btn-outline-dark" (click)="newfeedback()">Értékelés írása</button>
+  </div>
+</ng-template>

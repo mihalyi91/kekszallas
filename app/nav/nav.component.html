@@ -1,0 +1,25 @@
+<nav class="navbar navbar-toggleable-md navbar-inverse bg-inverse fixed-top navbar-custom" style="z-index: 100">
+  <div class="nav navbar-nav">
+	<div class="container">
+	  <div class="row">
+	  	<div class="col-9">
+		  <a class="navbar-brand" href="#">Kék szállás</a>
+		</div>
+		<div class="col-1">
+			<span class="nav-link" (click)="OpenSearch()"><i class="fa fa-search" aria-hidden="true" placement="bottom" ngbTooltip="Keresés"></i></span>
+		</div>
+		<div class="col-1">
+			<span class="nav-link" (click)="OpenAdd()"><i class="fa fa-plus" aria-hidden="true" placement="bottom" ngbTooltip="Szállás hozzáadása"></i></span>
+		</div>
+		<div class="col-1">
+			<a class="nav-link" href="https://www.facebook.com/Kék-Szállás-618370728503962"><i class="fa fa-facebook" aria-hidden="true"></i></a>
+		</div>
+	 </div>
+	</div>
+  </div>
+</nav>
+
+<div style="position: absolute; bottom: 2px; right: 2px; left: 2px; z-index: 104">
+<ngb-alert *ngIf="hozzaadMessage" type="info" (close)="hozzaadMessage = null">Adj hozzá te is új szállást a fenn található + gomb megnyomásával!</ngb-alert>
+</div>
+

@@ -1,0 +1,15 @@
+<app-nav></app-nav>
+<div class="container">
+	<agm-map [latitude]="lat" [longitude]="lng" (mapClick)="placeMarker($event)">
+		<agm-marker *ngFor="let p of pins" [latitude]="convertStringToNumber(p.lat)" [longitude]="convertStringToNumber(p.lng)" (markerClick)="open(p.id)"></agm-marker>
+		<agm-kml-layer *ngIf="settings.showOKT" [url]="'http://kekszallas.uw.hu/terkepek/okt.kml'" [zIndex]="9999"></agm-kml-layer>
+		<agm-kml-layer *ngIf="settings.showAK" [url]="'http://kekszallas.uw.hu/terkepek/ak.kml'" [zIndex]="9999"></agm-kml-layer>
+		<agm-kml-layer *ngIf="settings.showDDK" [url]="'http://kekszallas.uw.hu/terkepek/ddk.kml'" [zIndex]="9999"></agm-kml-layer>
+	</agm-map>
+</div>
+<app-search [pins]=pins [settings]=settings></app-search>
+<app-add [pins]=pins></app-add>
+<app-edit></app-edit>
+<app-new-feedback></app-new-feedback>
+<app-pin></app-pin>
+<app-feedback></app-feedback>
