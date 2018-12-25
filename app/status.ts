@@ -1,8 +1,7 @@
-import { Accommodation } from '../accommodation';
+import { Accommodation } from './accommodation';
 
 export class Status {
-	constructor(public message: string, public status: string)
-	{ }
+  constructor(public message: string, public status: string) { }
 }
 
 export interface StatusResponse {

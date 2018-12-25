@@ -13,6 +13,14 @@
 		<label for="name" *ngIf="!nameError">Felhasználó név:</label>
 		<label for="name" *ngIf="nameError" style="color: #f00">Felhasználó név: Ez a mező kötelező!</label>
 		<input type="text" class="form-control" [(ngModel)]="name">
+		<label>Látogatás időpontja:</label>
+		<div class="input-group">
+      <input class="form-control" placeholder="év-hónap-nap"
+             name="dp" [(ngModel)]="visitDate" ngbDatepicker #date="ngbDatepicker">
+      <div class="input-group-append">
+        <button class="btn btn-outline-dark" (click)="date.toggle()" type="button"><i class="fa fa-calendar" aria-hidden="true">&nbsp;</i></button>
+      </div>
+    </div>
 		<label for="ertekeles" *ngIf="!feedbackTypeError">Értékelés: {{feedbackType}}</label>
 		<label for="ertekeles" *ngIf="feedbackTypeError" style="color: #f00">Értékelés: Ez a mező kötelező!</label>
 		<div class="btn-group btn-group-toggle btn-block" ngbRadioGroup name="radioBasic" [(ngModel)]="feedbackType">
@@ -31,6 +39,6 @@
 		<textarea class="form-control" rows="4" [(ngModel)]="feedbackText"></textarea>
   </div>
   <div class="modal-footer">
-	<button type="button" class="btn btn-outline-dark" (click)="newFeedbackSend(feedbackContent, feedbackID.id)">Elküldés</button>
+	<button type="button" class="btn btn-outline-dark" (click)="newFeedbackSend()">Elküldés</button>
   </div>
 </ng-template>

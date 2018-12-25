@@ -12,7 +12,8 @@
      <i class="fa fa-heart" style="color: red;" aria-hidden="true" *ngIf="feedback.feedbackType == 3"></i>
 	 <i class="fa fa-info-circle" style="color: green;" aria-hidden="true" *ngIf="feedback.feedbackType == 2"></i>
 	 <i class="fa fa-thumbs-down" aria-hidden="true" *ngIf="feedback.feedbackType == 1"></i>
-	 {{feedback.name}} - {{feedback.date}}
+   {{feedback.name}} - <i class="fa fa-calendar" aria-hidden="true">{{feedback.date}}</i>
+   <span *ngIf="feedback.visitDate != '0000.00.00'"> - <i class="fa fa-user" aria-hidden="true">{{feedback.visitDate}}</i></span> 
 	<p style="overflow-x: auto;">{{feedback.feedbackText}}</p>
 	</span>
 	<p *ngIf="feedbackID.feedbacks.length == 0" style="color: red;">Sajnos még nem érkezett értékelés erre a szállásra.<br> Tölsd fel Te egyet!</p>

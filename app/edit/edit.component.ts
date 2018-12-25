@@ -1,160 +1,123 @@
-import { Component, OnInit, ViewChild, TemplateRef, NgZone } from '@angular/core';
-import {HttpClient, HttpHeaders } from '@angular/common/http';
-import { Status, EditResponse } from '../nav/status';
+import { Component, ViewChild, TemplateRef, NgZone, OnDestroy, Input } from '@angular/core';
 import { Accommodation } from '../accommodation';
 import { ModalService } from '../modal.service';
+import { UtilsService } from '../utils.service';
 import {NgbModal, NgbModalRef} from '@ng-bootstrap/ng-bootstrap';
-
-declare var google: any;
+import { Subscription } from 'rxjs';
+import { Pin } from '../pin';
+import { HttpService } from '../http.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-edit',
   templateUrl: './edit.component.html',
   styleUrls: ['./edit.component.css']
 })
-export class EditComponent implements OnInit {
+export class EditComponent implements OnDestroy {
+  @Input() pins: Pin[];
   @ViewChild('editContent', {read: TemplateRef}) editContent: TemplateRef<any>;
-  
+
   name: string;
-  accName: string;
-  address: string;
-  lat: number;
-  lng: number;
-  trail: string;
-  price: number;
-  isCoordinate:boolean = false;
+  isCoordinate = false;
   otp: boolean;
   mkb: boolean;
   kh: boolean;
-  
+
   nameError: boolean;
   accNameError: boolean;
-  addressError:boolean;
+  addressError: boolean;
+  phoneError: boolean;
   nameErrorMessage: string;
-  
+
   accID: Accommodation;
+  newAcc: Accommodation;
   private modalRef: NgbModalRef;
-  
-  constructor(private zone:NgZone, private http: HttpClient, private modalService: NgbModal,private modal: ModalService) {
-	this.modal.EditModal.subscribe((val)=>{
-	
-	this.modalRef = this.modalService.open(this.editContent);
-	
-	  this.accID = val;
-	  this.trail = val.trail;
-	  this.address = val.address;
-	  this.accName = val.name;
-	  this.lat = val.lat;
-	  this.lng = val.lng;
-	  this.price = Number(val.price);
-	  var splitted = val.szepKartya.split("|");
-	  this.otp = splitted[0] == "1";
-	  this.mkb = splitted[1] == "1";
-	  this.kh = splitted[2] == "1";
-	  this.isCoordinate = false;
-	  
-	  this.accNameError = false
-	  this.addressError = false
-	  this.nameError = false
-	  
-	  
-	});
+
+  subscription: Subscription;
+
+  constructor(private zone: NgZone,
+         private http: HttpService,
+         private modalService: NgbModal,
+         private modal: ModalService,
+         private utils: UtilsService,
+         private router: Router) {
+    this.subscription = this.modal.EditModal.subscribe((val) => {
+
+    this.modalRef = this.modalService.open(this.editContent);
+
+      this.accID = val;
+      this.newAcc = Object.create(val);
+      const splitted = val.voucherCard.split('|');
+      this.otp = splitted[0] === '1';
+      this.mkb = splitted[1] === '1';
+      this.kh = splitted[2] === '1';
+      this.isCoordinate = false;
+
+      this.accNameError = false;
+      this.addressError = false;
+      this.nameError = false;
+      this.phoneError = false;
+    });
   }
 
-  ngOnInit() {
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
+   }
+
+  select(value) {
+     this.newAcc.trail = value;
   }
 
-  select(value)
-  {
-	 this.trail = value;
+  back() {
+    this.modalRef.close();
+    this.router.navigate(['/szallas', this.accID.id]);
   }
-  
-  back()
-  {
-  	this.modalRef.close();
-	this.modal.PinModal.next(this.accID);
+
+  pinSelection() {
+    this.modalRef.close();
+    const selectionSubscription = this.modal.PinSelection.subscribe((val) => {
+        selectionSubscription.unsubscribe();
+        this.modalRef = this.modalService.open(this.editContent);
+        this.isCoordinate = true;
+        this.newAcc.lat = val.lat;
+        this.newAcc.lng = val.lng;
+    });
   }
-  SzepKartyaStringGenerator() : string
-  {
-	return (this.otp ? "1" : "0") + "|" + (this.mkb ? "1" : "0") + "|" + (this.kh ? "1" : "0");
-  }
-  
-  IsNameRequested() : boolean
-  {
-	return this.accName != this.accID.name || this.price != Number(this.accID.price) || this.address != this.accID.address || this.lng != this.accID.lng || this.lat != this.accID.lat || this.SzepKartyaStringGenerator() != this.accID.szepKartya;
-  }
-	send()
-	{
-		this.accNameError = this.accName == "" || this.accName == undefined;
-		this.addressError = this.isCoordinate ? ((this.lat == 0 || this.lat == undefined) || (this.lng == 0 || this.lng == undefined)) : (this.address == "" || this.address == undefined);
-		this.nameError = (this.name == "" || this.name == undefined) && this.IsNameRequested()
-		this.nameErrorMessage = "Ez a mező kötelező!";
-		
-		if(!this.accNameError && !this.addressError && !this.nameError)
-		{
-		 var geocoder = new google.maps.Geocoder();
-	     var latitude = "";
-		 var longitude = "";
-		 geocoder.geocode({ 'address': this.address }, (results, status) => {
-		   if(results.length > 0)
-		   {
-			latitude = results[0].geometry.location.lat();
-			longitude = results[0].geometry.location.lng();
-		
-			const body = new URLSearchParams();
-			body.set('id', this.accID.id.toString());
-			body.set('trail', this.trail);
-			if(this.IsNameRequested())
-			{
-				body.set('userName', this.name);
-			}
-			if(this.accName != this.accID.name)
-			{
-				body.set('name', this.accName);
-			}
-			if(this.price != Number(this.accID.price))
-			{
-				body.set('price', this.price.toString());
-			}
-			if(!this.isCoordinate && this.address != this.accID.address)
-			{
-				body.set('address', this.address);
-				body.set('lat', latitude);
-				body.set('lng', longitude);
-			}
-			if(this.isCoordinate && (this.lng != this.accID.lng || this.lat != this.accID.lat))
-			{
-				body.set('address', this.lat + ", " + this.lng);
-				body.set('lat', this.lat.toString());
-				body.set('lng', this.lng.toString());
-			}
-			if(this.SzepKartyaStringGenerator() != this.accID.szepKartya)
-			{
-				body.set('szepKartya', this.SzepKartyaStringGenerator());
-			}
-			let headers = new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded; charset=utf-8');
-			this.http.post<EditResponse>('http://kekszallas.uw.hu/php/search.php', body.toString(), {
-			headers: headers
-			}).subscribe(x => 
-				{
-				if (x.result[0].status == 'error')
-				{
-					this.zone.run(() => {
-						this.accNameError = true;
-						this.nameErrorMessage = x.result[0].message;
-					});
-				}
-				else
-				{
-					this.modalRef.close();
-					this.modal.PinModal.next(x.accommodation);
-				} 		
-				});
-				
-		   }
-		});
-		}
-	
-	}
-  
+
+    send() {
+        this.accNameError = this.newAcc.name === '' || this.newAcc.name === undefined;
+        const phoneRegex = new RegExp('^[\+]?[0]{0,2}[36]?[06]?[\/ (-]?[0-9]{2}[)]?[\/ \.-]?[0-9]{3}[ \.-]?[0-9]{3,4}$');
+        this.phoneError = this.newAcc.phone === '' || this.newAcc.phone === undefined || !phoneRegex.test(this.newAcc.phone.trim());
+        if (this.isCoordinate) {
+            this.addressError = (this.newAcc.lat === 0 || this.newAcc.lat === undefined)
+             || (this.newAcc.lng === 0 || this.newAcc.lng === undefined);
+        } else {
+            this.addressError = (this.newAcc.address === '' || this.newAcc.address === undefined);
+        }
+        this.nameError = (this.name === '' || this.name === undefined) && this.utils.IsNameRequested(this.accID, this.newAcc);
+        this.nameErrorMessage = 'Ez a mező kötelező!';
+
+        if (!this.accNameError && !this.addressError && !this.nameError && !this.phoneError ) {
+            this.newAcc.voucherCard = this.utils.VoucherCardStringGenerator(this.otp, this.mkb, this.kh);
+
+            const httpSubscriptions = this.http.EditAccomodation(this.accID, this.newAcc, this.isCoordinate, this.name);
+            const errorSubscription = httpSubscriptions['error'].subscribe(x => {
+                    this.zone.run(() => {
+                        this.accNameError = true;
+                        this.nameErrorMessage = x;
+                    });
+                });
+
+            const successSubscription = httpSubscriptions['success'].subscribe(x => {
+                this.modalRef.close();
+                const pin = this.pins.filter(item => item.id.toString() === x.id).pop();
+                pin.lat = x.lat;
+                pin.lng = x.lng;
+                this.router.navigate(['/szallas', { id: x.id }]);
+            });
+
+            this.subscription.add(errorSubscription);
+            this.subscription.add(successSubscription);
+        }
+    }
 }

@@ -1,8 +1,6 @@
-@import "~bootstrap/dist/css/bootstrap.min.css";
-@import "~font-awesome/css/font-awesome.css";
+@import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
+@import "../node_modules/font-awesome/css/font-awesome.css";
 
-body {
-}
 
 agm-map {
 	position: fixed;
@@ -10,4 +8,13 @@ agm-map {
     height: 100%;
     left: 0;
     top: 0;
+}
+
+.checkbox {
+    margin-left: 4px;
+
+}
+.radio {
+    padding: 0px 0px 0px 22px;
+
 }

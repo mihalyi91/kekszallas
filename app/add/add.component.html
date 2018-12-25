@@ -1,6 +1,7 @@
 <div style="position: absolute; top: 3px; right: 2px; left: 2px; z-index: 105">
 <ngb-alert *ngIf="successMessage" type="success" (close)="successMessage = null">Sikeresen hozzáadtál egy új szállást! Köszönjük.</ngb-alert>
 </div>
+
 <ng-template #addcontent let-c="close" let-d="dismiss">
   <div class="modal-header">
     <h4 class="modal-title">Új Szállás Hozzáadás</h4>
@@ -12,20 +13,38 @@
     <div [ngClass]="nameError ? 'form-group has-danger' : 'form-group'" id="szallasDiv" style="margin-bottom: 0rem">
       <label for="usr" *ngIf="!nameError">Szállás neve:</label>
 	  <label for="usr" *ngIf="nameError" style="color: #f00">Szállás neve: {{nameErrorMessage}}</label>
-      <input [(ngModel)]="name" type="text" class="form-control" placeholder="Szállás neve" id="usr">
+      <input [(ngModel)]="acc.name" type="text" class="form-control" placeholder="Szállás neve">
     </div>
     <div [ngClass]="addressError ? 'form-group has-danger' : 'form-group'" id="addressDiv" style="margin-bottom: 0rem">
       <label for="usr" *ngIf="!addressError">Szállás címe:</label>
-	  <label for="usr" *ngIf="addressError" style="color: #f00">Szállás címe: Ez a mező kötelező!</label>
-      <input [(ngModel)]="address" type="text" class="form-control" placeholder="Szállás címe" id="usr">
-    </div>
+			<label for="usr" *ngIf="addressError" style="color: #f00">Szállás címe: Ez a mező kötelező!</label>
+			<label class="form-check-label radio" for="radioAddress">
+			<input class="form-check-input" type="radio" name="radioAddress" id="radioAddress" value="address" checked (change)="isCoordinate=false">
+			Cím
+			</label>
+			<label class="form-check-label radio" for="radioAddress2">
+			<input class="form-check-input" type="radio" name="radioAddress" id="radioAddress2" value="coordinate" (change)="isCoordinate=true">
+			GPS koordináták
+			</label>
+      <input [(ngModel)]="acc.address" type="text" class="form-control" placeholder="Szállás címe" *ngIf="!isCoordinate">
+		</div>
+		<div class="form-group row" style="margin-bottom: 0rem" *ngIf="isCoordinate" [ngClass]="addressError ? 'form-group has-danger' : 'form-group'">
+			<label for="inputlat" class="col-sm-2 col-form-label">Szélesség:</label>
+			<div class="col-sm-4">
+				<input type="number" class="form-control" id="inputlat" [(ngModel)]="acc.lat" placeholder="Szélesség">
+			</div>
+			<label for="inputlng" class="col-sm-2 col-form-label">Hosszúság:</label>
+			<div class="col-sm-4">
+			<input type="number" class="form-control" id="inputlng" [(ngModel)]="acc.lng" placeholder="Hosszúság">
+			</div>
+		</div>
 	<div [ngClass]="phoneError ? 'form-group has-danger' : ' form-group'" id="phoneDiv" style="margin-bottom: 0rem">
 		<label for="phone" *ngIf="!phoneError" class="col-9" style="padding: 0px;">Telefonszám:</label>
-		<label for="phone" *ngIf="phoneError" style="color: #f00" class="col-9" style="padding: 0px;">Telefonszám: Hibás! Javasolt formátum: +36(70)123-4567</label>
-		<label for="tura">Túramozgalom:</label>
+		<label for="phone" *ngIf="phoneError" class="col-9" style="color: #f00; padding: 0px;">Telefonszám: Hibás!</label>
+		<label for="trail">Túramozgalom:</label>
 	  <div class="input-group">
-	  <input [(ngModel)]="phone" type="text" class="form-control col-9" placeholder="Telefonszám, például: +36(70)123-4567">
-	  <input [(ngModel)]="trail" type="text" class="form-control col-2" placeholder="OKT" readonly>
+	  <input [(ngModel)]="acc.phone" type="text" class="form-control col-9" placeholder="Telefonszám, például: +36(70)123-4567" id="phone">
+	  <input [(ngModel)]="acc.trail" type="text" class="form-control col-2" placeholder="OKT" readonly>
 		<div class="btn-group" ngbDropdown role="group" aria-label="Button group with nested dropdown">
 			<button class="btn btn-primary dropdown-toggle-split" ngbDropdownToggle></button>
 			<div class="dropdown-menu" ngbDropdownMenu>
@@ -41,29 +60,29 @@
 		<label for="usr" *ngIf="urlError" style="color: #f00">Egyéb elérhetőség: Hibás webcím formátum!</label>
 	    <div class="input-group">
 		  <div class="input-group-addon"><i class="fa fa-link" aria-hidden="true"></i></div>
-		  <input [(ngModel)]="website" type="url" class="form-control" placeholder="Weboldal"  id="usr"/>
+		  <input [(ngModel)]="acc.web" type="url" class="form-control" placeholder="Weboldal"/>
 		  <div class="input-group-addon">@</div>
-		  <input [(ngModel)]="mail" type="text" class="form-control" placeholder="E-mail cím" />
+		  <input [(ngModel)]="acc.mail" type="text" class="form-control" placeholder="E-mail cím" />
 	    </div>
     </div>
     <div class="form-group" style="margin-bottom: 0rem">
       <label for="usr">Ár:</label>
 	  <div class="input-group mb-2 mr-sm-2 mb-sm-0">
-	     <input [(ngModel)]="price" type="number" class="form-control" placeholder="Szállás ára" id="usr">
+	     <input [(ngModel)]="acc.price" type="number" class="form-control" placeholder="Szállás ára" id="usr">
 	     <div class="input-group-addon">Ft/fő/éj</div>
 	  </div>
     </div>
 	<label>Utalvány elfogadás:</label><br>
 	<label for="szepcheckbox">
-	<input class="col-form-input" type="checkbox" id="szepcheckbox" [(ngModel)]="otp"  value="OTP">
+	<input class="col-form-input checkbox" type="checkbox" id="szepcheckbox" [(ngModel)]="otp"  value="OTP">
 	OTP Szép Kártya
 	</label>
 	<label for="szepcheckbox2">
-	<input class="col-form-input" type="checkbox" id="szepcheckbox2" [(ngModel)]="mkb" value="MKB">
+	<input class="col-form-input checkbox" type="checkbox" id="szepcheckbox2" [(ngModel)]="mkb" value="MKB">
 	MKB Szép Kártya
 	</label>
 	<label for="szepcheckbox3">
-	<input class="col-form-input" type="checkbox" id="szepcheckbox3"[(ngModel)]="kh" value="KH">
+	<input class="col-form-input checkbox" type="checkbox" id="szepcheckbox3"[(ngModel)]="kh" value="KH">
 	K&H Szép Kártya
 	</label>
   </div>

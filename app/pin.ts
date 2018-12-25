@@ -1,7 +1,6 @@
 export class Pin {
-	constructor(public id: number,public lng: string,public lat: string)
-	{ 	
-	}
+    constructor(public id: number, public lng: number, public lat: number) {
+    }
 }
 
 export interface PinsResponse {

@@ -21,24 +21,30 @@
 		</div>
       <label>Ár:</label>
 	    <div class="input-group">
-		  <input [(ngModel)]="minAr" type="number" class="form-control" placeholder="Minimum ár"/>
+		  <input [(ngModel)]="minPrice" type="number" class="form-control" placeholder="Minimum ár"/>
 		  <div class="input-group-addon">-</div>
-		  <input [(ngModel)]="maxAr" type="number" class="form-control" placeholder="Maximum ár" />
+		  <input [(ngModel)]="maxPrice" type="number" class="form-control" placeholder="Maximum ár" />
 		  <div class="input-group-addon">Ft/fő/éj</div>
 	    </div>
 		<label>Utalvány elfogadás:</label><br>
-		<label for="szepcheckbox">
-		<input class="col-form-input" type="checkbox" id="szepcheckbox" [(ngModel)]="otp"  value="OTP">
+		<label for="otpCheckbox">
+		<input class="col-form-input checkbox" type="checkbox" id="otpCheckbox" [(ngModel)]="otp"  value="OTP">
 		OTP Szép Kártya
 		</label>
-		<label for="szepcheckbox2">
-		<input class="col-form-input" type="checkbox" id="szepcheckbox2" [(ngModel)]="mkb" value="MKB">
+		<label for="mkbCheckbox">
+		<input class="col-form-input checkbox" type="checkbox" id="mkbCheckbox" [(ngModel)]="mkb" value="MKB">
 		MKB Szép Kártya
 		</label>
-		<label for="szepcheckbox3">
-		<input class="col-form-input" type="checkbox" id="szepcheckbox3"[(ngModel)]="kh" value="KH">
+		<label for="khCheckbox">
+		<input class="col-form-input checkbox" type="checkbox" id="khCheckbox"[(ngModel)]="kh" value="KH">
 		K&H Szép Kártya
 		</label>
+		<br>
+		<label>Vélemények:</label><br>
+		<label for="feedback">
+			<input class="col-form-input" type="checkbox" id="feedback" [(ngModel)]="hasFeedback" value="feedback">
+			Csak véleménnyel rendelkező szállások megjelenítése
+			</label>
     </div>
   </div>
   <div class="modal-footer">

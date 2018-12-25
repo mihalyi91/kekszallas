@@ -1,61 +1,62 @@
-import { Component, OnInit, Input, ViewChild, TemplateRef } from '@angular/core';
-import { Pin } from '../pin';
+import { Component, OnInit, ViewChild, TemplateRef, OnDestroy } from '@angular/core';
 import { ModalService } from '../modal.service';
-import { Accommodation, AccommodationResponse } from '../accommodation';
+import { Accommodation } from '../accommodation';
 import {NgbModal, NgbModalRef} from '@ng-bootstrap/ng-bootstrap';
-import {HttpClient, HttpHeaders } from '@angular/common/http';
-import {Location, LocationStrategy} from '@angular/common';
+import { Subscription } from 'rxjs';
+import { HttpService } from '../http.service';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-pin',
   templateUrl: './pin.component.html',
   styleUrls: ['./pin.component.css']
 })
-export class PinComponent implements OnInit {
+export class PinComponent implements OnInit, OnDestroy {
     @ViewChild('pinContent', {read: TemplateRef}) pinContent: TemplateRef<any>;
-	
+
    accID: Accommodation;
-	
+
    private modalRef: NgbModalRef;
-	
-  constructor(private http: HttpClient, private modal: ModalService, private modalService: NgbModal, private location : Location)
-  { 
-	modal.PinModal.subscribe((val)=>{
-	  if(val instanceof String)
-	  {
-		this.open(val.toString());
-	  }
-	  else
-	  {
-		this.accID = val;
-		this.modalRef = this.modalService.open(this.pinContent);	  
-	  }
-	});  
+   subscription: Subscription;
+
+  constructor(private route: ActivatedRoute, private router: Router,
+     private http: HttpService, private modal: ModalService, private modalService: NgbModal) {
   }
 
   ngOnInit() {
+    const subscription = this.route.paramMap.pipe()
+     .subscribe(x => this.open(x.get('id')));
+     this.subscription.add(subscription);
   }
 
-	open(id) {
-	this.http.get<AccommodationResponse>('http://kekszallas.uw.hu/php/search.php?id='+ id).subscribe(resp => {
-			this.accID = resp.accommodation;
-			if (this.modalRef != null || this.modalRef != undefined)
-			{
-				this.modalRef.close();
-			}
-			this.modalRef = this.modalService.open(this.pinContent);
-			location.assign('/index.html#/szallas/' + id);
-	});
-	}
-	
-	edit(content) {
-			this.modalRef.close();
-			this.modal.EditModal.next(this.accID);
-	}
-	
-	
-	feedback() {	
-		    this.modalRef.close();
-		    this.modal.FeedbackModal.next(new String(this.accID.id));
-	}
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
+    }
+
+    open(id) {
+      this.subscription = this.http.GetAccommodationByID(id)
+      .subscribe(resp => {
+              this.accID = resp;
+              if (this.modalRef != null || this.modalRef !== undefined) {
+                  this.modalRef.close();
+              }
+              this.modalRef = this.modalService.open(this.pinContent);
+      });
+    }
+
+    edit() {
+            this.router.navigate(['/szerkesztes', this.accID.id]);
+            this.modalRef.close();
+            this.modal.EditModal.next(this.accID);
+    }
+
+    feedback() {
+            this.modalRef.close();
+            this.router.navigate(['/velemeny', this.accID.id]);
+    }
+
+    close() {
+        this.modalRef.close();
+        this.router.navigate(['/fooldal']);
+     }
 }

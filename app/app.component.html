@@ -7,9 +7,8 @@
 		<agm-kml-layer *ngIf="settings.showDDK" [url]="'http://kekszallas.uw.hu/terkepek/ddk.kml'" [zIndex]="9999"></agm-kml-layer>
 	</agm-map>
 </div>
-<app-search [pins]=pins [settings]=settings></app-search>
+<app-search [pins]=pins [settings]=settings (newPins)='pinsUpdate($event)'></app-search>
 <app-add [pins]=pins></app-add>
-<app-edit></app-edit>
+<app-edit [pins]=pins></app-edit>
 <app-new-feedback></app-new-feedback>
-<app-pin></app-pin>
-<app-feedback></app-feedback>
+<router-outlet></router-outlet>
